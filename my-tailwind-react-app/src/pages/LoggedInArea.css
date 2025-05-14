@@ -1,0 +1,69 @@
+/* Minimum height to ensure the background covers the viewport */
+.loggedin-min-h-screen {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7fafc; /* Tailwind's bg-gray-50 */
+}
+
+/* Container for the logged-in area content */
+.loggedin-container {
+  background-color: #fff;
+  padding: 3rem;
+  border-radius: 0.75rem; /* Tailwind's rounded-lg */
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Tailwind's shadow-md */
+  text-align: center;
+}
+
+/* Main title */
+.loggedin-title {
+  font-size: 2.25rem; /* Tailwind's text-2xl */
+  font-weight: 700; /* Tailwind's font-bold */
+  color: #2d3748; /* Tailwind's text-gray-800 */
+  margin-bottom: 1.5rem;
+}
+
+/* Description text */
+.loggedin-description {
+  color: #4a5568; /* Tailwind's text-gray-600 */
+  line-height: 1.5rem; /* Tailwind's leading-relaxed */
+  margin-bottom: 2rem;
+}
+
+/* Container for the buttons */
+.loggedin-buttons {
+  display: flex;
+  gap: 1rem; /* Tailwind's gap-4 */
+  justify-content: center;
+}
+
+/* Common button styles */
+.loggedin-buttons button {
+  padding: 0.75rem 1.5rem; /* Tailwind's py-3 px-6 */
+  border-radius: 0.5rem; /* Tailwind's rounded-md */
+  font-weight: 500; /* Tailwind's font-medium */
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+  border: none;
+}
+
+/* Dashboard button */
+.loggedin-dashboard-btn {
+  background-color: #63b3ed; /* Tailwind's bg-blue-400 */
+  color: #fff; /* Tailwind's text-white */
+}
+
+.loggedin-dashboard-btn:hover {
+  background-color: #4299e1; /* Tailwind's bg-blue-500 */
+}
+
+/* Logout button */
+.loggedin-logout-btn {
+  background-color: #f56565; /* Tailwind's bg-red-500 */
+  color: #fff; /* Tailwind's text-white */
+}
+
+.loggedin-logout-btn:hover {
+  background-color: #e53e3e; /* Tailwind's bg-red-600 */
+}
