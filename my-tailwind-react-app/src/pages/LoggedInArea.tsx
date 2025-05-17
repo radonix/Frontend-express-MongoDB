@@ -1,35 +1,62 @@
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify"; // Make sure to install react-toastify
-import "./LoggedInArea.css"; // Optional: for custom styles
+import React, { useState, useEffect } from "react";
 
-const API_BASE_URL = "https://zany-winner-x496vg95wgfv659-3000.app.github.dev";
+// 1. Update types
+export type Exercise = {
+    name: string;
+    sets: number;
+    reps: number;
+    weight: number;
+};
 
-type Training = {
+export type Training = {
     _id?: string;
     name: string;
     description: string;
     date: string;
-    exercises: string[];
+    exercises: Exercise[];
     createdAt?: string;
     updatedAt?: string;
 };
 
-function getToken() {
-    return localStorage.getItem("token") || "";
-}
-
+// Define TrainingFormProps
 type TrainingFormProps = {
-    onSubmit: (data: Omit<Training, "_id" | "createdAt" | "updatedAt">) => Promise<void>;
+    onSubmit: (data: Omit<Training, "_id" | "createdAt" | "updatedAt">) => Promise<void> | void;
     initialData?: Training | null;
     onCancel?: () => void;
 };
 
-function TrainingForm({ onSubmit, initialData = null, onCancel }: TrainingFormProps) {
-    const [name, setName] = useState(initialData?.name || "");
-    const [description, setDescription] = useState(initialData?.description || "");
-    const [date, setDate] = useState(initialData?.date || "");
-    const [exercisesInput, setExercisesInput] = useState(initialData?.exercises?.join(", ") || "");
-    const [isLoading, setIsLoading] = useState(false);
+// 2. Update TrainingForm
+export const TrainingForm: React.FC<TrainingFormProps> = ({ onSubmit, initialData = null, onCancel }) => {
+    const [name, setName] = useState<string>(initialData?.name || "");
+    const [description, setDescription] = useState<string>(initialData?.description || "");
+    const [date, setDate] = useState<string>(initialData?.date || "");
+    const [exercises, setExercises] = useState<Exercise[]>(initialData?.exercises || [
+        { name: "", sets: 1, reps: 1, weight: 0 }
+    ]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    useEffect(() => {
+        setName(initialData?.name || "");
+        setDescription(initialData?.description || "");
+        setDate(initialData?.date || "");
+        setExercises(initialData?.exercises || [{ name: "", sets: 1, reps: 1, weight: 0 }]);
+    }, [initialData]);
+
+    const handleExerciseChange = (idx: number, field: keyof Exercise, value: string | number) => {
+        setExercises((exs: Exercise[]) =>
+            exs.map((ex: Exercise, i: number) =>
+                i === idx ? { ...ex, [field]: field === "name" ? value : Number(value) } : ex
+            )
+        );
+    };
+
+    const addExercise = () => {
+        setExercises((exs: Exercise[]) => [...exs, { name: "", sets: 1, reps: 1, weight: 0 }]);
+    };
+
+    const removeExercise = (idx: number) => {
+        setExercises((exs: Exercise[]) => exs.length > 1 ? exs.filter((_: Exercise, i: number) => i !== idx) : exs);
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,187 +66,97 @@ function TrainingForm({ onSubmit, initialData = null, onCancel }: TrainingFormPr
                 name: name.trim(),
                 description: description.trim(),
                 date: date.trim(),
-                exercises: exercisesInput.split(",").map(e => e.trim()).filter(Boolean),
+                exercises: exercises.filter((ex: Exercise) => ex.name.trim()),
             });
             if (!initialData) {
-                setName(""); setDescription(""); setDate(""); setExercisesInput("");
+                setName(""); setDescription(""); setDate(""); setExercises([{ name: "", sets: 1, reps: 1, weight: 0 }]);
             }
-        } catch (err) {
-            // Parent handles error
-        } finally {
-            setIsLoading(false);
-        }
+        } catch {}
+        setIsLoading(false);
     };
 
     return (
-        <form onSubmit={handleSubmit} className="training-form bg-white p-4 rounded shadow mb-4">
-            <h3 className="font-bold mb-2">{initialData ? "Editar Treino" : "Adicionar Novo Treino"}</h3>
-            <div className="mb-2">
-                <label className="block text-sm">Nome</label>
-                <input className="border p-2 w-full" value={name} onChange={e => setName(e.target.value)} required disabled={isLoading} />
+        <form onSubmit={handleSubmit} style={{ background: "#fff", padding: 16, borderRadius: 6, boxShadow: "0 2px 8px #0001", marginBottom: 16 }}>
+            <h3 style={{ fontWeight: "bold", marginBottom: 8 }}>{initialData ? "Editar Treino" : "Adicionar Novo Treino"}</h3>
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 14 }}>Nome</label>
+                <input style={{ border: "1px solid #ccc", padding: 8, width: "100%" }} value={name} onChange={e => setName(e.target.value)} required disabled={isLoading} />
             </div>
-            <div className="mb-2">
-                <label className="block text-sm">Descrição</label>
-                <input className="border p-2 w-full" value={description} onChange={e => setDescription(e.target.value)} disabled={isLoading} />
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 14 }}>Descrição</label>
+                <input style={{ border: "1px solid #ccc", padding: 8, width: "100%" }} value={description} onChange={e => setDescription(e.target.value)} required disabled={isLoading} />
             </div>
-            <div className="mb-2">
-                <label className="block text-sm">Data</label>
-                <input className="border p-2 w-full" value={date} onChange={e => setDate(e.target.value)} required disabled={isLoading} />
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 14 }}>Data</label>
+                <input style={{ border: "1px solid #ccc", padding: 8, width: "100%" }} value={date} onChange={e => setDate(e.target.value)} required disabled={isLoading} />
             </div>
-            <div className="mb-2">
-                <label className="block text-sm">Exercícios (separados por vírgula)</label>
-                <input className="border p-2 w-full" value={exercisesInput} onChange={e => setExercisesInput(e.target.value)} disabled={isLoading} />
+            <div style={{ marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 14 }}>Exercícios</label>
+                {exercises.map((ex: Exercise, idx: number) => (
+                    <div key={idx} style={{ display: "flex", gap: 8, marginBottom: 4, alignItems: "center" }}>
+                        <input
+                            placeholder="Nome"
+                            style={{ flex: 2, border: "1px solid #ccc", padding: 6 }}
+                            value={ex.name}
+                            onChange={e => handleExerciseChange(idx, "name", e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
+                        <input
+                            type="number"
+                            min={1}
+                            placeholder="Séries"
+                            style={{ width: 60, border: "1px solid #ccc", padding: 6 }}
+                            value={ex.sets}
+                            onChange={e => handleExerciseChange(idx, "sets", e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
+                        <input
+                            type="number"
+                            min={1}
+                            placeholder="Reps"
+                            style={{ width: 60, border: "1px solid #ccc", padding: 6 }}
+                            value={ex.reps}
+                            onChange={e => handleExerciseChange(idx, "reps", e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
+                        <input
+                            type="number"
+                            min={0}
+                            placeholder="Peso"
+                            style={{ width: 70, border: "1px solid #ccc", padding: 6 }}
+                            value={ex.weight}
+                            onChange={e => handleExerciseChange(idx, "weight", e.target.value)}
+                            required
+                            disabled={isLoading}
+                        />
+                        <button type="button" onClick={() => removeExercise(idx)} disabled={isLoading || exercises.length === 1} style={{ background: "#ef4444", color: "#fff", border: "none", borderRadius: 4, padding: "4px 8px" }}>-</button>
+                    </div>
+                ))}
+                <button type="button" onClick={addExercise} disabled={isLoading} style={{ marginTop: 4, background: "#2563eb", color: "#fff", border: "none", borderRadius: 4, padding: "4px 12px" }}>Adicionar Exercício</button>
             </div>
-            <div className="flex gap-2 mt-2">
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded" disabled={isLoading}>
+            <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                <button type="submit" style={{ background: "#2563eb", color: "#fff", padding: "8px 16px", borderRadius: 4, border: "none" }} disabled={isLoading}>
                     {isLoading ? (initialData ? "Salvando..." : "Adicionando...") : (initialData ? "Salvar Alterações" : "Adicionar Treino")}
                 </button>
-                {onCancel && <button type="button" className="bg-gray-300 px-4 py-2 rounded" onClick={onCancel} disabled={isLoading}>Cancelar</button>}
+                {onCancel && <button type="button" style={{ background: "#e5e7eb", padding: "8px 16px", borderRadius: 4, border: "none" }} onClick={onCancel} disabled={isLoading}>Cancelar</button>}
             </div>
         </form>
     );
-}
+};
 
-export default function LoggedInArea() {
-    const [trainings, setTrainings] = useState<Training[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [showForm, setShowForm] = useState(false);
-    const [editingTraining, setEditingTraining] = useState<Training | null>(null);
-
-    const token = getToken();
-
-    const fetchTrainings = async () => {
-        setIsLoading(true);
-        try {
-            if (!token) {
-                toast.error("Autenticação necessária.");
-                window.location.href = "/login";
-                return;
-            }
-            const res = await fetch(`${API_BASE_URL}/trainings`, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error("Falha ao buscar treinos");
-            const data = await res.json();
-            setTrainings(data);
-        } catch (err: any) {
-            toast.error(err.message || "Erro ao buscar treinos.");
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchTrainings();
-        // eslint-disable-next-line
-    }, []);
-
-    const handleCreateTraining = async (trainingData: Omit<Training, "_id" | "createdAt" | "updatedAt">) => {
-        try {
-            const res = await fetch(`${API_BASE_URL}/trainings`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify(trainingData),
-            });
-            if (!res.ok) throw new Error("Falha ao criar treino");
-            const newTraining = await res.json();
-            setTrainings([newTraining, ...trainings]);
-            toast.success("Treino adicionado com sucesso!");
-            setShowForm(false);
-        } catch (err: any) {
-            toast.error(err.message || "Erro ao criar treino.");
-        }
-    };
-
-    const handleUpdateTraining = async (trainingData: Omit<Training, "_id" | "createdAt" | "updatedAt">) => {
-        if (!editingTraining?._id) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/trainings/${editingTraining._id}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-                body: JSON.stringify(trainingData),
-            });
-            if (!res.ok) throw new Error("Falha ao atualizar treino");
-            const updated = await res.json();
-            setTrainings(trainings.map(t => t._id === editingTraining._id ? updated : t));
-            toast.success("Treino atualizado com sucesso!");
-            setEditingTraining(null);
-            setShowForm(false);
-        } catch (err: any) {
-            toast.error(err.message || "Erro ao atualizar treino.");
-        }
-    };
-
-    const handleDeleteTraining = async (id: string) => {
-        if (!window.confirm("Tem certeza que deseja deletar este treino?")) return;
-        try {
-            const res = await fetch(`${API_BASE_URL}/trainings/${id}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            if (!res.ok) throw new Error("Falha ao deletar treino");
-            setTrainings(trainings.filter(t => t._id !== id));
-            toast.success("Treino deletado com sucesso!");
-        } catch (err: any) {
-            toast.error(err.message || "Erro ao deletar treino.");
-        }
-    };
-
-    const openEditForm = (training: Training) => {
-        setEditingTraining(training);
-        setShowForm(true);
-    };
-
-    const openCreateForm = () => {
-        setEditingTraining(null);
-        setShowForm(true);
-    };
-
-    if (isLoading) {
-        return <div className="p-4">Carregando seus treinos...</div>;
-    }
-
-    return (
-        <div className="p-4 max-w-2xl mx-auto">
-            <header className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold">Meus Treinos</h2>
-                <button onClick={openCreateForm} className="bg-blue-500 text-white px-4 py-2 rounded">
-                    Adicionar Novo Treino
-                </button>
-            </header>
-
-            {showForm && (
-                <div className="modal-form">
-                    <TrainingForm
-                        onSubmit={editingTraining ? handleUpdateTraining : handleCreateTraining}
-                        initialData={editingTraining}
-                        onCancel={() => { setShowForm(false); setEditingTraining(null); }}
-                    />
-                </div>
-            )}
-
-            {trainings.length > 0 ? (
-                <ul className="divide-y">
-                    {trainings.map((t) => (
-                        <li key={t._id} className="py-3">
-                            <h3 className="font-semibold">{t.name}</h3>
-                            <p><strong>Descrição:</strong> {t.description}</p>
-                            <p><strong>Data:</strong> {t.date}</p>
-                            <p><strong>Exercícios:</strong> {t.exercises?.join(", ")}</p>
-                            <p className="text-xs text-gray-500">
-                                <small>Criado em: {t.createdAt ? new Date(t.createdAt).toLocaleDateString() : "-"}</small><br />
-                                <small>Atualizado em: {t.updatedAt ? new Date(t.updatedAt).toLocaleDateString() : "-"}</small>
-                            </p>
-                            <div className="flex gap-2 mt-2">
-                                <button onClick={() => openEditForm(t)} className="bg-gray-300 px-3 py-1 rounded">Editar</button>
-                                <button onClick={() => handleDeleteTraining(t._id!)} className="bg-red-500 text-white px-3 py-1 rounded">Deletar</button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
-            ) : (
-                !showForm && <p className="text-gray-500">Nenhum treino cadastrado ainda. Que tal adicionar um?</p>
-            )}
-        </div>
-    );
-}
+// 3. Example display in the list (replace 't' with your Training object variable)
+/*
+<p>
+    <strong>Exercícios:</strong>
+    <ul style={{ margin: 0, paddingLeft: 16 }}>
+        {training.exercises?.map((ex: Exercise, i: number) => (
+            <li key={i}>
+                {ex.name} - {ex.sets}x{ex.reps} ({ex.weight}kg)
+            </li>
+        ))}
+    </ul>
+</p>
+*/
