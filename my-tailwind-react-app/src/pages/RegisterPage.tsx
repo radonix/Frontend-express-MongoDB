@@ -1,4 +1,5 @@
 import { useState, FocusEvent, FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import './registerPage.css'; // Crie um arquivo CSS para esta página
 
 function RegisterPage() {
@@ -12,6 +13,7 @@ function RegisterPage() {
   const [confirmPasswordPlaceholder, setConfirmPasswordPlaceholder] = useState("Confirmar Senha");
   const [registrationError, setRegistrationError] = useState('');
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null); // Store userId
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -22,7 +24,7 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:3000/users/register', {
+      const response = await fetch('https://zany-winner-x496vg95wgfv659-3000.app.github.dev/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -40,16 +42,19 @@ function RegisterPage() {
         console.log('Registration successful:', data);
         setRegistrationSuccess(true);
         setRegistrationError('');
+        setUserId(data.userId || data._id || null); // Store userId from response
         // Optionally redirect the user or show a success message
       } else {
         console.error('Registration failed:', data);
         setRegistrationError(data.message || 'Erro ao registrar usuário.');
         setRegistrationSuccess(false);
+        setUserId(null);
       }
     } catch (error) {
       console.error('There was an error during registration:', error);
       setRegistrationError('Erro de conexão com o servidor.');
       setRegistrationSuccess(false);
+      setUserId(null);
     }
   };
 
@@ -108,18 +113,20 @@ function RegisterPage() {
           </div>
           {registrationError && <p className="error-message">{registrationError}</p>}
           {registrationSuccess && <p className="success-message">Cadastro realizado com sucesso!</p>}
+          {/* Optionally display userId for debugging */}
+          {userId && <p className="user-id-message">Seu ID de usuário: {userId}</p>}
           <button
             type="submit"
             className="register-button"
           >
             Cadastrar
           </button>
-          <a
-            href="#"
+          <Link
+            to="/login"
             className="register-login-link"
           >
             Já tem uma conta? Faça login!
-          </a>
+          </Link>
         </form>
       </div>
     </div>

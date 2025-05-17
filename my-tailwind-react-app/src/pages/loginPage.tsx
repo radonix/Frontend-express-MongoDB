@@ -26,7 +26,7 @@ function LoginPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/users/login', {
+      const response = await fetch('https://zany-winner-x496vg95wgfv659-3000.app.github.dev/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,9 +39,12 @@ function LoginPage() {
       if (response.ok) {
         // Handle successful login (e.g., store token, redirect user)
         console.log('Login successful!', responseData);
-        // Example:
-        // localStorage.setItem('authToken', responseData.token);
-        // window.location.href = '/dashboard';
+        // Store token locally
+        if (responseData.token) {
+          localStorage.setItem('token', responseData.token);
+          console.log('Token stored:', responseData.token);
+        }
+        window.location.href = '/loggedIn'; // Redirect to the logged-in area
       } else {
         // Handle login failure (e.g., display error message)
         console.error('Login failed:', responseData);
@@ -93,18 +96,18 @@ function LoginPage() {
             href="#"
             className="login-forgot"
           >
-            Recuperar senha
+        <div className="login-register">
+            <button
+            type="button"
+            className="login-register-link"
+            onClick={() => window.location.href = '/register'}
+            >
+            Não tem uma conta?Cadastre-se aqui!
+            </button>
+        </div>
           </a>
         </form>
-        <div className="login-register">
-          <span className="login-register-text">Não tem uma conta?</span>
-          <a
-            href="#"
-            className="login-register-link"
-          >
-            Cadastre-se aqui!
-          </a>
-        </div>
+
       </div>
     </div>
   );
