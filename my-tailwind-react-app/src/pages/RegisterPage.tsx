@@ -24,7 +24,7 @@ function RegisterPage() {
     }
 
     try {
-      const response = await fetch('https://zany-winner-x496vg95wgfv659-3000.app.github.dev/users/register', {
+      const response = await fetch('https://expert-space-cod-xp4jgq5v754c6rwj-3000.app.github.dev/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
