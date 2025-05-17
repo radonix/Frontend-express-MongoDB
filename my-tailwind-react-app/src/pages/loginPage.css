@@ -1,0 +1,96 @@
+/* loginPage.css */
+
+/* Container for the login form */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f3f4f6; /* Tailwind's bg-gray-100 */
+}
+
+/* Login form box */
+.login-form {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1.5px 4px rgba(0,0,0,0.06);
+    width: 100%;
+    max-width: 28rem; /* Tailwind's max-w-md */
+}
+
+/* Input fields */
+.login-input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5db; /* Tailwind's border-gray-300 */
+    border-radius: 0.25rem;
+    outline: none;
+    transition: box-shadow 0.2s;
+}
+
+.login-input:focus {
+    box-shadow: 0 0 0 2px #3b82f6; /* Tailwind's ring-2 ring-blue-500 */
+    border-color: #3b82f6;
+}
+
+/* Submit button */
+.login-button {
+    width: 100%;
+    background-color: #2563eb; /* Tailwind's bg-blue-600 */
+    color: #fff;
+    padding: 0.5rem 0;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.login-button:hover {
+    background-color: #1d4ed8; /* Tailwind's bg-blue-700 */
+}
+
+/* Error message */
+.login-error {
+    color: #ef4444; /* Tailwind's text-red-500 */
+    margin-bottom: 1rem;
+    font-size: 0.875rem;
+}
+
+/* Link to register or forgot password */
+.login-link {
+    color: #2563eb; /* Tailwind's text-blue-600 */
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.login-link:hover {
+    text-decoration: underline;
+}
+
+/* Link to register */
+.login-register-link {
+    color: #2563eb; /* Tailwind's text-blue-600 */
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: block; /* Para ocupar a largura total e centralizar o texto */
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.login-register-link:hover {
+    text-decoration: underline;
+}
+
+/* Responsive styles */
+@media (max-width: 640px) {
+    .login-container {
+        padding: 1rem;
+    }
+
+    .login-form {
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,84 @@
+/* Auth.css */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, var(--primary-color) 0%, #0056b3 100%); /* Gradiente sutil */
+}
+
+.auth-container {
+  background-color: var(--surface-color);
+  padding: 30px 40px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+  width: 100%;
+  max-width: 450px;
+  text-align: center;
+}
+
+.auth-form h2 {
+  margin-bottom: 25px;
+  font-size: 2rem;
+  color: var(--primary-color);
+}
+
+.form-group {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--text-light-color);
+  font-family: var(--font-primary);
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius);
+  font-size: 1rem;
+  box-sizing: border-box; /* Importante para padding não aumentar o tamanho total */
+  transition: border-color 0.3s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 12px 15px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  font-size: 1.1rem;
+  font-family: var(--font-primary);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px; /* Espaço antes do link */
+}
+
+.auth-button:hover {
+  background-color: var(--primary-hover-color);
+}
+
+.auth-link {
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: var(--text-light-color);
+}
+
+.auth-link a {
+  font-weight: 500;
+  color: var(--primary-color);
+}

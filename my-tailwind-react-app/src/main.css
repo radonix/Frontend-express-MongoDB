@@ -1,0 +1,22 @@
+/* General background for the main content area */
+.main-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f3f4f6; /* Tailwind's bg-gray-100 - a light gray */
+}
+
+/* Main container for the application content */
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  justify-content: flex-start; /* Align items at the top initially */
+  width: 100%;
+  max-width: 48rem; /* Increased max-width for general content (Tailwind's max-w-xl) */
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 1.5px 4px rgba(0,0,0,0.06);
+}
