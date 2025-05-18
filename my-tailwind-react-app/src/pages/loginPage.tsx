@@ -26,7 +26,7 @@ function LoginPage() {
     };
 
     try {
-      const response = await fetch('https://expert-space-cod-xp4jgq5v754c6rwj-3000.app.github.dev/users/login', {
+      const response = await fetch('https://express-backend-example-jet.vercel.app/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
