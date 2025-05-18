@@ -3,7 +3,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./LoggedInArea.css"; // You can add your own styles here
 
-const API_BASE_URL = "https://expert-space-cod-xp4jgq5v754c6rwj-3000.app.github.dev";
+const API_BASE_URL = "https://express-backend-example-jet.vercel.app";
 
 type Exercise = {
   name: string;
